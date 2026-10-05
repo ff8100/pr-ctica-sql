@@ -1,406 +1,255 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard Redes Sociales</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <style>
-    :root {
-      --bg: #f4f6f9;
-      --card-bg: #ffffff;
-      --border: #e2e8f0;
-      --primary: #1e293b;
-      --accent: #2563eb;
-      --bar-yesterday: #94a3b8;
-      --bar-today: #2563eb;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Referencia Técnica SQL</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-main: #c9d1d9;
+            --text-heading: #58a6ff;
+            --code-bg: #010409;
+            --accent-green: #2ea043;
+            --accent-purple: #bc8cff;
+            --accent-orange: #d29922;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg);
-      margin: 0;
-      padding: 20px;
-      color: var(--primary);
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px 40px;
+        }
 
-    /* Modal de Autenticación */
-    #login-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
+        h1 {
+            color: var(--text-heading);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
 
-    .login-box {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      max-width: 320px;
-      width: 100%;
-    }
+        h2 {
+            color: var(--accent-purple);
+            margin-top: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
 
-    .login-box h3 { margin-top: 0; color: var(--primary); }
-    
-    .login-box input[type="password"] {
-      width: 90%;
-      padding: 10px;
-      margin: 15px 0;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 1rem;
-      text-align: center;
-    }
+        h3 {
+            color: #79c0ff;
+            margin-bottom: 5px;
+        }
 
-    .login-box button {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-    }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
 
-    .login-box button:hover { background: #1d4ed8; }
-    .error-msg { color: #dc2626; font-size: 0.85rem; margin-top: 8px; display: none; }
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            overflow-x: auto;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.9em;
+            color: #e6edf3;
+        }
 
-    /* Barra Superior de Fechas */
-    .header-info {
-      max-width: 1200px;
-      margin: 0 auto 20px auto;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 15px 20px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: rgba(110, 118, 129, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
 
-    .date-badge {
-      background: #e2e8f0;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
 
-    /* Contenedor del Dashboard */
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+        .keyword { color: #ff7b72; font-weight: bold; }
+        .function { color: #d29922; }
+        .string { color: #a5d6ff; }
+        .comment { color: #8b949e; font-style: italic; }
 
-    /* Tarjeta estilo Bosquejo */
-    .card {
-      background: var(--card-bg);
-      border: 2px solid var(--primary);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+        ul {
+            padding-left: 20px;
+        }
 
-    .account-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 12px;
-    }
-
-    .avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid var(--primary);
-      object-fit: cover;
-      background: #e0e0e0;
-    }
-
-    .account-name {
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
-
-    .matrix-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-      font-size: 0.85rem;
-    }
-
-    .matrix-table th, .matrix-table td {
-      border: 1px solid var(--primary);
-      padding: 6px 4px;
-    }
-
-    .matrix-table th { background-color: #f1f5f9; font-weight: bold; }
-
-    .row-label {
-      text-align: left;
-      font-weight: bold;
-      padding-left: 8px !important;
-      background-color: #f8fafc;
-    }
-
-    .badge-principal {
-      display: inline-block;
-      padding: 2px 8px;
-      background: #dbeafe;
-      color: #1e40af;
-      border-radius: 4px;
-      font-weight: bold;
-    }
-
-    .chart-section {
-      border-top: 1px dashed var(--primary);
-      padding-top: 12px;
-      text-align: center;
-    }
-
-    .chart-title { font-weight: bold; margin-bottom: 12px; font-size: 0.95rem; }
-
-    .bars-container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 30px;
-      height: 120px;
-      padding-bottom: 5px;
-    }
-
-    .bar-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 45px;
-      height: 100%;
-      justify-content: flex-end;
-    }
-
-    .bar-val { font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; }
-    .bar {
-      width: 100%;
-      border: 1.5px solid var(--primary);
-      border-radius: 4px 4px 0 0;
-      transition: height 0.3s ease;
-    }
-
-    .bar-yesterday { background-color: var(--bar-yesterday); }
-    .bar-today { background-color: var(--bar-today); }
-    .bar-label { margin-top: 6px; font-size: 0.8rem; font-weight: bold; }
-  </style>
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Modal de Login -->
-  <div id="login-overlay">
-    <div class="login-box">
-      <h3>Acceso Requerido</h3>
-      <input type="password" id="password-input" placeholder="Ingresa la contraseña" onkeypress="handleKeyPress(event)">
-      <button onclick="checkPassword()">Ingresar</button>
-      <div id="error-msg" class="error-msg">Contraseña incorrecta</div>
+    <h1>Guía de Referencia Técnica SQL</h1>
+    <p>Manual explicativo de sintaxis, conceptos esenciales y comandos para el manejo de bases de datos relacionales.</p>
+
+    <h2>1. Definición y Manipulación de Datos (DDL & DML)</h2>
+
+    <div class="card">
+        <h3>CREATE TABLE (Crear Tablas)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Define la estructura e infraestructura de una nueva tabla, especificando el nombre de las columnas, tipos de datos permitidos y restricciones de integridad.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">CREATE TABLE IF NOT EXISTS</span> nombre_tabla (
+    columna1 TIPO_DATO RESTRICCION,
+    columna2 TIPO_DATO
+);</code></pre>
+        <ul>
+            <li><strong>Tipos comunes:</strong> <code>INTEGER</code> (enteros), <code>TEXT</code> (cadenas), <code>REAL</code> (decimales), <code>DATE</code> (fechas).</li>
+            <li><strong>Restricciones:</strong> <code>PRIMARY KEY</code> (llave primaria única), <code>AUTOINCREMENT</code> (incremento automático), <code>NOT NULL</code> (obligatorio).</li>
+        </ul>
+        <p><strong>Ejemplo:</strong></p>
+<pre><code><span class="keyword">CREATE TABLE IF NOT EXISTS</span> departamentos (
+    id <span class="keyword">INTEGER PRIMARY KEY AUTOINCREMENT</span>,
+    nombre <span class="keyword">TEXT NOT NULL</span>
+);</code></pre>
     </div>
-  </div>
 
-  <!-- Banner con Fechas del Reporte -->
-  <div class="header-info" id="header-info" style="display: none;">
-    <h2 style="margin:0; font-size:1.2rem;">Resumen de Redes Sociales</h2>
-    <div>
-      <span>Corte Actual: <span class="date-badge" id="txt-actualizacion">--</span></span>
-      <span style="margin-left: 15px;">Corte Anterior: <span class="date-badge" id="txt-anterior">--</span></span>
+    <div class="card">
+        <h3>INSERT INTO (Insertar Registros)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Agrega una o más filas de datos en una tabla existente.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">INSERT INTO</span> nombre_tabla (columna1, columna2) 
+<span class="keyword">VALUES</span> (<span class="string">'valor1'</span>, valor2);</code></pre>
+        <p><strong>Ejemplo:</strong></p>
+<pre><code><span class="keyword">INSERT INTO</span> departamentos (nombre) 
+<span class="keyword">VALUES</span> (<span class="string">'Sistemas'</span>), (<span class="string">'Ventas'</span>);</code></pre>
     </div>
-  </div>
 
-  <!-- Contenedor del Dashboard -->
-  <div class="container" id="dashboard" style="display: none;">
-    <!-- Se llena dinámicamente -->
-  </div>
+    <div class="card">
+        <h3>UPDATE (Actualizar Registros)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Modifica los valores de una o varias columnas en registros ya existentes. Requiere una cláusula <code>WHERE</code> para evitar modificar toda la tabla.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">UPDATE</span> nombre_tabla
+<span class="keyword">SET</span> columna = nuevo_valor
+<span class="keyword">WHERE</span> condicion;</code></pre>
+        <p><strong>Ejemplo:</strong></p>
+<pre><code><span class="keyword">UPDATE</span> empleados 
+<span class="keyword">SET</span> salario = 950.00 
+<span class="keyword">WHERE</span> nombre = <span class="string">'Carlos Ruiz'</span>;</code></pre>
+    </div>
 
-  <script>
-    // Hash SHA-256 de la contraseña predeterminada ("1234")
-    const PASSWORD_HASH = "6cf20c38026bd356e7b035331c98516395c33687973a8c1147fd8c5c853a5896";
+    <div class="card">
+        <h3>DELETE (Eliminar Registros)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Remueve de forma permanente una o varias filas de una tabla basándose en una condición específica.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">DELETE FROM</span> nombre_tabla
+<span class="keyword">WHERE</span> condicion;</code></pre>
+        <p><strong>Ejemplo:</strong></p>
+<pre><code><span class="keyword">DELETE FROM</span> empleados 
+<span class="keyword">WHERE</span> id = 3;</code></pre>
+    </div>
 
-    const AVATARS = {
-      'Félix Arratia': 'Felix.png',
-      'Secretaría de Igualdad e Inclusión': 'Logo.png',
-      'Mónica Oyervides': 'Monica.png'
-    };
+    <h2>2. Consultas, Filtros y Agregaciones</h2>
 
-    // Función auxiliar para calcular el Hash SHA-256 en el navegador
-    async function sha256(str) {
-      const buffer = new TextEncoder().encode(str);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    <div class="card">
+        <h3>SELECT y WHERE (Consultar y Filtrar)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Recupera datos de una o más tablas y permite filtrar filas específicas según criterios lógicos.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">SELECT</span> columna1, columna2 <span class="keyword">AS</span> alias
+<span class="keyword">FROM</span> nombre_tabla
+<span class="keyword">WHERE</span> condicion;</code></pre>
+        <ul>
+            <li><strong>Operadores de comparación:</strong> <code>=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>&lt;&gt;</code> (diferente).</li>
+        </ul>
+    </div>
 
-    async function checkPassword() {
-      const input = document.getElementById('password-input').value;
-      const hashedInput = await sha256(input);
+    <div class="card">
+        <h3>Funciones de Agregación (COUNT, SUM, AVG)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Realizan cálculos sobre un conjunto de valores y devuelven un único valor escalar de resumen.</p>
+        <ul>
+            <li><code>COUNT(*)</code>: Cuenta el número total de registros que coinciden con la consulta.</li>
+            <li><code>SUM(columna)</code>: Calcula la suma total de los valores numéricos de una columna.</li>
+            <li><code>AVG(columna)</code>: Obtiene el promedio aritmético de los datos numéricos de una columna.</li>
+        </ul>
+        <p><strong>Ejemplo:</strong></p>
+<pre><code><span class="keyword">SELECT</span> <span class="function">AVG</span>(salario) <span class="keyword">AS</span> salario_promedio <span class="keyword">FROM</span> empleados;</code></pre>
+    </div>
 
-      if (hashedInput === PASSWORD_HASH) {
-        document.getElementById('login-overlay').style.display = 'none';
-        document.getElementById('header-info').style.display = 'flex';
-        document.getElementById('dashboard').style.display = 'grid';
-        loadDashboardData();
-      } else {
-        document.getElementById('error-msg').style.display = 'block';
-      }
-    }
+    <div class="card">
+        <h3>GROUP BY y HAVING (Agrupamiento y Filtro de Grupos)</h3>
+        <p><strong>¿Para qué sirve?:</strong> <code>GROUP BY</code> agrupa filas que tienen los mismos valores en filas de resumen. <code>HAVING</code> permite aplicar filtros a esos grupos consolidados (a diferencia de <code>WHERE</code>, que filtra filas individuales antes de agrupar).</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">SELECT</span> departamento, <span class="function">SUM</span>(salario) <span class="keyword">AS</span> total_depto
+<span class="keyword">FROM</span> empleados
+<span class="keyword">GROUP BY</span> departamento
+<span class="keyword">HAVING</span> <span class="function">SUM</span>(salario) &gt; 1500;</code></pre>
+    </div>
 
-    function handleKeyPress(e) {
-      if (e.key === 'Enter') checkPassword();
-    }
+    <div class="card">
+        <h3>Subconsultas (Subqueries)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Una consulta anidada dentro de otra instrucción SQL. Permite evaluar criterios dinámicos que dependen de un cálculo previo.</p>
+        <p><strong>Sintaxis / Ejemplo:</strong></p>
+<pre><code><span class="keyword">SELECT</span> nombre, salario 
+<span class="keyword">FROM</span> empleados
+<span class="keyword">WHERE</span> salario &gt; (<span class="keyword">SELECT</span> <span class="function">AVG</span>(salario) <span class="keyword">FROM</span> empleados);</code></pre>
+    </div>
 
-    function formatDate(val) {
-      if (!val) return 'N/A';
-      if (typeof val === 'string' && val.includes('T')) return val.split('T')[0];
-      return String(val).substring(0, 10);
-    }
+    <div class="card">
+        <h3>ORDER BY y LIMIT (Ordenamiento y Paginación)</h3>
+        <p><strong>¿Para qué sirve?:</strong> <code>ORDER BY</code> organiza los datos de forma ascendente (<code>ASC</code>) o descendente (<code>DESC</code>). <code>LIMIT</code> restringe la cantidad máxima de resultados a retornar.</p>
+        <p><strong>Sintaxis / Ejemplo:</strong></p>
+<pre><code><span class="keyword">SELECT</span> nombre, salario 
+<span class="keyword">FROM</span> empleados
+<span class="keyword">ORDER BY</span> salario <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 1;</code></pre>
+    </div>
 
-    function formatNum(num) {
-      if (!num) return '0';
-      return Number(num).toLocaleString('es-MX');
-    }
+    <h2>3. Relación entre Tablas y JOINs</h2>
 
-    function loadDashboardData() {
-      fetch('Redes.xlsx')
-        .then(res => res.arrayBuffer())
-        .then(data => {
-          const wb = XLSX.read(data, { type: 'array' });
-          
-          // 1. Procesar Pestaña Resumen (Fechas)
-          if (wb.Sheets['Resumen']) {
-            const resumenRows = XLSX.utils.sheet_to_json(wb.Sheets['Resumen'], { header: 1 });
-            resumenRows.forEach(row => {
-              if (row[0] === 'fecha_actualizacion') {
-                document.getElementById('txt-actualizacion').innerText = formatDate(row[1]);
-              }
-              if (row[0] === 'fecha_corte_anterior') {
-                document.getElementById('txt-anterior').innerText = formatDate(row[1]);
-              }
-            });
-          }
+    <div class="card">
+        <h3>Claves Foráneas (Foreign Keys)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Una columna o grupo de columnas que establece un vínculo directo entre los datos de dos tablas. Garantiza la integridad referencial conectando la clave primaria de una tabla principal con una columna de una tabla secundaria.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">CREATE TABLE</span> empleados (
+    id <span class="keyword">INTEGER PRIMARY KEY AUTOINCREMENT</span>,
+    nombre <span class="keyword">TEXT NOT NULL</span>,
+    departamento_id <span class="keyword">INTEGER</span>,
+    <span class="keyword">FOREIGN KEY</span> (departamento_id) <span class="keyword">REFERENCES</span> departamentos(id)
+);</code></pre>
+    </div>
 
-          // 2. Procesar Pestaña Publicaciones
-          const pubSheet = wb.Sheets['Publicaciones'];
-          const rows = XLSX.utils.sheet_to_json(pubSheet);
+    <div class="card">
+        <h3>INNER JOIN (Cruzar coincidencias exactas)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Devuelve únicamente las filas que tienen valores coincidentes en ambas tablas.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">SELECT</span> empleados.nombre, departamentos.nombre <span class="keyword">AS</span> departamento
+<span class="keyword">FROM</span> empleados
+<span class="keyword">INNER JOIN</span> departamentos 
+<span class="keyword">ON</span> empleados.departamento_id = departamentos.id;</code></pre>
+    </div>
 
-          const grouped = {};
-          rows.forEach(r => {
-            if (!grouped[r.cuenta]) grouped[r.cuenta] = [];
-            grouped[r.cuenta].push(r);
-          });
+    <div class="card">
+        <h3>LEFT JOIN (Priorizar tabla izquierda)</h3>
+        <p><strong>¿Para qué sirve?:</strong> Devuelve todas las filas de la tabla izquierda (la primera nombrada) y las filas coincidentes de la tabla derecha. Si no hay coincidencia, devuelve valores <code>NULL</code> para la tabla derecha.</p>
+        <p><strong>Sintaxis:</strong></p>
+<pre><code><span class="keyword">SELECT</span> empleados.nombre, departamentos.nombre <span class="keyword">AS</span> departamento
+<span class="keyword">FROM</span> empleados
+<span class="keyword">LEFT JOIN</span> departamentos 
+<span class="keyword">ON</span> empleados.departamento_id = departamentos.id;</code></pre>
+    </div>
 
-          const dashboard = document.getElementById('dashboard');
-          dashboard.innerHTML = '';
-          Object.keys(grouped).forEach(cuenta => {
-            dashboard.innerHTML += renderCard(cuenta, grouped[cuenta]);
-          });
-        })
-        .catch(err => console.error("Error al leer Redes.xlsx:", err));
-    }
+    <div class="card">
+        <h3>RIGHT JOIN y FULL OUTER JOIN</h3>
+        <p><strong>¿Para qué sirve?:</strong></p>
+        <ul>
+            <li><code>RIGHT JOIN</code>: Devuelve todos los registros de la tabla derecha y las coincidencias de la izquierda.</li>
+            <li><code>FULL OUTER JOIN</code>: Devuelve todos los registros cuando hay una coincidencia en la tabla izquierda o derecha.</li>
+        </ul>
+        <p><em>Nota sobre SQLite: SQLite no admite la sintaxis nativa de `RIGHT JOIN` ni `FULL OUTER JOIN`, pero estos se simulan mediante la combinación de `LEFT JOIN` y el operador `UNION`.</em></p>
+    </div>
 
-    function renderCard(accountName, rows) {
-      const ig = rows.find(r => r.red.toLowerCase().includes('instagram')) || {};
-      const fb = rows.find(r => r.red.toLowerCase().includes('facebook')) || {};
-      const otras = rows.filter(r => 
-        !r.red.toLowerCase().includes('instagram') && 
-        !r.red.toLowerCase().includes('facebook')
-      );
-
-      const igSeg = ig.seguidores || 0;
-      const fbSeg = fb.seguidores || 0;
-      const otrasSeg = otras.reduce((sum, r) => sum + (r.seguidores || 0), 0);
-
-      const igPub = ig.publicaciones || 0;
-      const fbPub = fb.publicaciones || 0;
-      const otrasPub = otras.reduce((sum, r) => sum + (r.publicaciones || 0), 0);
-
-      const pubAyerTotal = rows.reduce((sum, r) => sum + (r.publicaciones_ayer || 0), 0);
-      const pubHoyTotal = rows.reduce((sum, r) => sum + (r.publicaciones_hoy || 0), 0);
-
-      let mainRed = 'FB';
-      let maxSeg = fbSeg;
-      if (igSeg > maxSeg) { mainRed = 'IG'; maxSeg = igSeg; }
-      if (otrasSeg > maxSeg) { mainRed = 'Otra'; }
-
-      const maxVal = Math.max(pubAyerTotal, pubHoyTotal, 1);
-      const hAyer = Math.max((pubAyerTotal / maxVal) * 80, 6);
-      const hHoy = Math.max((pubHoyTotal / maxVal) * 80, 6);
-
-      const avatarSrc = AVATARS[accountName] || '';
-
-      return `
-        <div class="card">
-          <div class="account-header">
-            <img class="avatar" src="${avatarSrc}" onerror="this.src='https://via.placeholder.com/50'">
-            <div class="account-name">${accountName}</div>
-          </div>
-
-          <table class="matrix-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Ig</th>
-                <th>Fb</th>
-                <th>Otra</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="row-label">Seguidores</td>
-                <td>${formatNum(igSeg)}</td>
-                <td>${formatNum(fbSeg)}</td>
-                <td>${formatNum(otrasSeg)}</td>
-              </tr>
-              <tr>
-                <td class="row-label">Publicaciones</td>
-                <td>${formatNum(igPub)}</td>
-                <td>${formatNum(fbPub)}</td>
-                <td>${formatNum(otrasPub)}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div style="display:flex; justify-content:space-between; align-align:center; font-size:0.9rem; padding:0 4px;">
-            <span style="font-weight:bold;">Red principal:</span>
-            <span class="badge-principal">${mainRed}</span>
-          </div>
-
-          <div class="chart-section">
-            <div class="chart-title">Publicaciones</div>
-            <div class="bars-container">
-              <div class="bar-group">
-                <span class="bar-val">${pubAyerTotal}</span>
-                <div class="bar bar-yesterday" style="height: ${hAyer}px;"></div>
-                <span class="bar-label">Ayer</span>
-              </div>
-              <div class="bar-group">
-                <span class="bar-val">${pubHoyTotal}</span>
-                <div class="bar bar-today" style="height: ${hHoy}px;"></div>
-                <span class="bar-label">Hoy</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-  </script>
 </body>
 </html>
+
